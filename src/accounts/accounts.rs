@@ -135,7 +135,7 @@ where
         .unwrap();
 
     let library = assembler.clone().assemble_library(&[*module]).unwrap();
-    assembler.clone().with_library(library).unwrap();
+    let assembler = assembler.clone().with_library(library).unwrap();
 
     // Compile the transaction script
     let tx_script = TransactionScript::compile(

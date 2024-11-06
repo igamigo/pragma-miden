@@ -82,17 +82,25 @@ pub const SOURCE_CODE: &str = r#"
     #! Outputs: []
     #!
     export.push_oracle_data
-        push.2 dup movdn.5
-        # => [2, WORD_1, 2, WORD_2, ...]
-        repeat.4
-            exec.account::set_item
-            dropw dropw
-            # => [index, WORD_index+1, ...]
-            
-            add.1 dup movdn.5
-            # => [index+1, WORD_index+1, index+1, ...]
-        end
-        drop
+        push.2
+        exec.account::set_item
+        dropw
+        # => [WORD_2, WORD_3, WORD_4]
+
+        push.3
+        exec.account::set_item
+        dropw
+        # => [WORD_3, WORD_4]
+
+        push.4
+        exec.account::set_item
+        dropw
+        # => [WORD_4]
+
+        push.5
+        exec.account::set_item
+        dropw
+        # => []
     end
 
     #! Verify the signature of the data provider
@@ -139,6 +147,11 @@ pub fn get_oracle_account(
     let assembler = TransactionKernel::assembler();
 
     let oracle_account_code = AccountCode::compile(SOURCE_CODE, assembler).unwrap();
+
+    println!("PROC ROOTS");
+    for proc in oracle_account_code.procedure_roots() {
+        println!("proc root {proc}")
+    }
 
     let account_storage = AccountStorage::new(
         vec![
